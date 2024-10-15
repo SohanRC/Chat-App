@@ -107,7 +107,18 @@ const MessageSend = () => {
                 />
                 <div className='p-1 md:p-3 flex gap-2'>
                     <div onClick={() => fileRef.current.click()}>
-                        <input type="file" name="messageFile" id="messageFile" className="hidden" ref={fileRef} onChange={(event) => setFile(event.target.files[0])} />
+                        <input
+                            type="file"
+                            name="messageFile"
+                            id="messageFile"
+                            className="hidden"
+                            ref={fileRef}
+                            onChange={(event) => {
+                                setFile(event.target.files[0])
+                                toast.success('File Selected !');
+                            }
+                            }
+                        />
                         <AttachFileIcon className='cursor-pointer hover:text-slate-300' />
                     </div>
                     <div onClick={() => setOpenEmojiPicker((prev) => !prev)}>

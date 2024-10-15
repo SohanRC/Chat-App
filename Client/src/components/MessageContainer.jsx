@@ -133,6 +133,7 @@ const MessageContainer = () => {
                                 }}
                               />
                             </a>
+                            <span className='text-sm'>Click to View the File</span>
                           </div>
                       }
                       {/* <Message msg={item.content ? item.content : item.fileUrl} className={`text-justify p-2 ${item.sender == user._id ? "bg-[#ff5087]" : "bg-[#ff2a1f]"} font-semibold rounded-md max-w-[16rem] min-w-[5rem] text-xs sm:text-sm md:text-xl`} /> */}

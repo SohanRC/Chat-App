@@ -91,7 +91,8 @@ const uploadImage = async (req, res, next) => {
             const result = await cloudinary.v2.uploader.upload(imageFile.tempFilePath, {
                 upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
                 folder: "Chat App",
-                resource_type: "auto"
+                resource_type: "auto",
+                type: "upload"
             })
             const { secure_url, public_id } = result;
             return res.status(200).json({
