@@ -2,13 +2,12 @@
 import React, { useEffect, useState } from 'react'
 import authService from '../Services/AuthService.js';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { logout } from '../store/slices/userSlice.js';
+import { login, logout } from '../store/slices/userSlice.js';
 import { ChatLayout, Loader } from "./index.js"
 
 const Chat = () => {
-    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -31,10 +30,14 @@ const Chat = () => {
                 else {
                     // success
                     const { data: { userDetails } } = result;
-                    setUser(userDetails);
+                    dispatch(login(userDetails));
+                    setLoading(false);
                 }
             } catch (error) {
                 console.log(error);
+                setLoading(false);
+                dispatch(logout());
+                navigate('/auth');
             }
         }
 
@@ -46,9 +49,11 @@ const Chat = () => {
         <Loader />
     )
 
-    return (user) ? (
-        <ChatLayout />
-    ) : <><h1>Could not fetch User Details ! Try Again !</h1></>
+    return <ChatLayout />
+
+    // return (user) ? (
+    //     <ChatLayout />
+    // ) : <><h1>Could not fetch User Details ! Try Again !</h1></>
 }
 
 export default Chat
