@@ -12,7 +12,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Avatar from '@mui/material/Avatar';
 import { Input } from "./index.js"
 import { setCurrentChat, addFriendChat } from '../store/slices/chatSlice.js';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import chatService from '../Services/ChatService.js';
 
 
 const NewContactDialog = ({ open, onClose }) => {
@@ -21,7 +22,8 @@ const NewContactDialog = ({ open, onClose }) => {
     const [search, setSearch] = useState([]);
     const [searchItem, setSearchItem] = useState("");
     const dispatch = useDispatch();
-    
+    const user = useSelector((state) => state.user.userInfo);
+
     useEffect(() => {
         const getAllContacts = async () => {
             setLoading(true);
@@ -45,6 +47,35 @@ const NewContactDialog = ({ open, onClose }) => {
 
         getAllContacts();
     }, [searchItem])
+
+    const handleAddContact = async (contact) => {
+        try {
+            setLoading(true);
+            const result = await chatService.addContact(user._id, contact._id);
+            setLoading(false);
+            if (result.data) {
+                // success
+                const { data: { message } } = result;
+                toast.success(message);
+                dispatch(setCurrentChat(contact));
+                dispatch(addFriendChat(contact));
+                onClose();
+            }
+            else {
+                // error
+                const { response: { data: { message } } } = result;
+                toast.error(message);
+                onClose();
+            }
+        } catch (error) {
+            setLoading(false);
+            const { response: { data: { message } } } = result;
+            toast.error(message);
+            onClose();
+        }
+    }
+
+
     return (
         <>
             <Dialog onClose={onClose} open={open}>
@@ -85,9 +116,10 @@ const NewContactDialog = ({ open, onClose }) => {
                                     search.map((item) => (
                                         <ListItem disableGutters key={item._id}>
                                             <ListItemButton onClick={() => {
-                                                dispatch(setCurrentChat(item));
-                                                dispatch(addFriendChat(item));
-                                                onClose();
+                                                handleAddContact(item);
+                                                // dispatch(setCurrentChat(item));
+                                                // dispatch(addFriendChat(item));
+                                                // onClose();
                                             }}>
                                                 <ListItemAvatar>
                                                     <Avatar>

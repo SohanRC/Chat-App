@@ -17,6 +17,9 @@ const chatSlice = createSlice({
         setCurrentMessages: (state, action) => {
             state.currChatMessages = action.payload
         },
+        setFriendChats: (state, action) => {
+            state.friendChats = action.payload || [];
+        },
         addChatMessages: (state, action) => {
             state.currChatMessages.push(action.payload);
         },
@@ -58,4 +61,4 @@ const chatSlice = createSlice({
 
 export default chatSlice.reducer
 
-export const { setCurrentChat, addFriendChannel, addFriendChat, removeFriendChannel, removeFriendChat, resetFriendChannels, resetFriendChats, setCurrentMessages, logoutChat, addChatMessages } = chatSlice.actions;
+export const { setCurrentChat, addFriendChannel, addFriendChat, removeFriendChannel, removeFriendChat, resetFriendChannels, resetFriendChats, setCurrentMessages, logoutChat, addChatMessages, setFriendChats } = chatSlice.actions;

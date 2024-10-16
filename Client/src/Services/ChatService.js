@@ -16,6 +16,29 @@ class ChatService {
             return error;
         }
     }
+
+    async addContact(userId, friendId) {
+        try {
+            return await axios.post(`/chat/addContact`, {
+                userId,
+                friendId
+            }, {
+                withCredentials: true
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async getAllContacts(userId) {
+        try {
+            return await axios.post(`/chat/getContacts`, {
+                userId
+            }, { withCredentials: true })
+        } catch (error) {
+            return error;
+        }
+    }
 }
 
 const chatService = new ChatService(); // object creation
