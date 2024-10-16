@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import chatService from '../Services/ChatService.js';
 import { toast } from 'react-toastify';
 import { setCurrentMessages } from '../store/slices/chatSlice.js';
-import { Message } from "./index.js"
+import { Message, Loader } from "./index.js"
 
 const MessageContainer = () => {
   const user = useSelector((state) => state.user.userInfo);
@@ -13,6 +13,7 @@ const MessageContainer = () => {
   const messageEndRef = useRef();
   const [currDate, setCurrDate] = useState("");
   const dateMap = new Map();
+  const [loadMessage, setLoadMessage] = useState(false);
 
   useEffect(() => {
     if (currDate) console.log(currDate.current)
@@ -26,11 +27,14 @@ const MessageContainer = () => {
   }, [currentChatMessages])
 
   useEffect(() => {
+
     if (currentChatUser) {
 
       const getAllChats = async () => {
+        setLoadMessage(true);
         try {
           const result = await chatService.getChats(user._id, currentChatUser._id)
+          setLoadMessage(false);
 
           if (result.data) {
             // success
@@ -43,12 +47,15 @@ const MessageContainer = () => {
             toast.error(message);
           }
         } catch (error) {
+          setLoadMessage(false);
           console.log(error)
           toast.error("Cannot fetch messages !")
         }
       }
+
       getAllChats();
     }
+
   }, [currentChatUser])
 
   const sendDate = (message) => {
@@ -157,7 +164,9 @@ const MessageContainer = () => {
           </div>
           :
           <>
-            <h1>Start To Chat by typing something !</h1>
+            {
+              loadMessage ? <h1 className='text-center text-xl font-raleway'>Loading Messages...!</h1> : <h1 className='text-center text-xl font-raleway'>Start To Chat by typing something !</h1>
+            }
           </>
       }
     </div>
