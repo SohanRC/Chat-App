@@ -139,17 +139,21 @@ const Contacts = () => {
           <img src={user.imageUrl} alt="Profile-Image" className='h-10 w-10 rounded-full' />
           <p>{user.firstName}</p>
         </div>
-        <div className='flex items-center gap-3 font-bold text-xl p-2 '>
-          <span onClick={handleEditProfile}>
-            <EditIcon className='text-[#33FFFF] cursor-pointer' sx={{
-              fontSize: "1.6rem"
-            }} />
-          </span>
-          <span onClick={handleLogout}>
-            <LogoutIcon className='text-[#33FFFF] cursor-pointer' sx={{
-              fontSize: "1.6rem"
-            }} />
-          </span>
+        <div className='flex items-center font-bold text-xl'>
+          <Tooltip title="Edit Profile">
+            <IconButton onClick={handleEditProfile}>
+              <EditIcon className='text-[#33FFFF] cursor-pointer' sx={{
+                fontSize: "1.6rem"
+              }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Logout">
+            <IconButton onClick={handleLogout}>
+              <LogoutIcon className='text-[#33FFFF] cursor-pointer' sx={{
+                fontSize: "1.6rem"
+              }} />
+            </IconButton>
+          </Tooltip>
         </div>
       </section>
     </div>
