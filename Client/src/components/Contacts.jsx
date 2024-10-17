@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Logo, AddContact } from "./index.js"
 import ChatIcon from '@mui/icons-material/Chat';
 import GroupIcon from '@mui/icons-material/Group';
@@ -19,15 +19,18 @@ import { setCurrentChat, removeFriendChat, logoutChat, setCurrentMessages } from
 import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
+import { Modal } from "./index.js"
 
 const Contacts = () => {
 
   const [section, setSection] = useState('contact'); // contact --> contact Message, channel ---> channels
+  const [showModal, setShowModal] = useState(false);
   const user = useSelector((state) => state.user.userInfo);
   const currentChatUser = useSelector((state) => state.chat.currChatUser);
   const friendChats = useSelector((state) => state.chat.friendChats);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const deletedItemRef = useRef();
 
   const handleLogout = async () => {
     try {
@@ -67,8 +70,13 @@ const Contacts = () => {
     setSection(sec);
   }
 
+  // if (showModal) {
+  //   return <Modal />
+  // }
+
   return (
     <div className=' min-h-screen p-2 text-white font-raleway'>
+      {showModal && <Modal msg="Do you want to permanently delete this contact ? All chats will be removed !" setShowModal={setShowModal} id={deletedItemRef?.current} />}
       <Logo />
       <header className='font-raleway mt-2 rounded-md grid md:grid-cols-2'>
         <div className={`border-2 ${section == "contact" ? "border-[#33FFFF]" : "border-slate-700"}  text-xs md:text-xl text-center text-wrap p-2 cursor-pointer hover:bg-slate-900 duration-100 transition-all  hover:border-[#33FFFF] rounded-md`} onClick={() => { setSectionHandler("contact") }}>
@@ -119,9 +127,14 @@ const Contacts = () => {
                   title={`Remove Chat`}
                   arrow={true}
                   placement='top'
-                  onClick={() => { deleteChat(item._id) }}
+                  // onClick={() => { deleteChat(item._id) }}
                 >
-                  <IconButton>
+                  <IconButton
+                    onClick={() => {
+                      setShowModal(true)
+                      deletedItemRef.current = item._id
+                    }}
+                  >
                     <DeleteIcon sx={{
                       color: "white",
                     }} />

@@ -15,5 +15,6 @@ import NewContactDialog from "./NewContactDialog";
 import NewChannelDialog from "./NewChannelDialog";
 import Loader from "./Loader";
 import Message from "./Message";
+import Modal from "./Modal";
 
-export { Auth, Input, Chat, Profile, ChatLayout, Chatbox, ChatWelcome, Contacts, Logo, ChatHeader, MessageContainer, MessageSend , AddContact, NewContactDialog, NewChannelDialog, Loader, Message}
+export { Auth, Input, Chat, Profile, ChatLayout, Chatbox, ChatWelcome, Contacts, Logo, ChatHeader, MessageContainer, MessageSend , AddContact, NewContactDialog, NewChannelDialog, Loader, Message, Modal}

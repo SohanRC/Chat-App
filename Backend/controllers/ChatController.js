@@ -33,14 +33,47 @@ const addContact = async (req, res, next) => {
         )
 
         await friendModel.updateOne(
-            { userId : friendId },
+            { userId: friendId },
             { $addToSet: { friendConnections: userId } },
+            { upsert: true }
+        )
+
+        await MessageModel.deleteMany({
+            $or: [
+                { sender: userId, recipent: friendId },
+                { sender: friendId, recipent: userId },
+            ]
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "User added as friend !"
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+const removeContact = async (req, res, next) => {
+    try {
+        const { userId, friendId } = req.body;
+        console.log(userId, friendId);
+
+        await friendModel.updateOne(
+            { userId },
+            { $pull: { friendConnections: friendId } },
+            { upsert: true }
+        )
+
+        await friendModel.updateOne(
+            { userId: friendId },
+            { $pull: { friendConnections: userId } },
             { upsert: true }
         )
 
         return res.status(200).json({
             success: true,
-            message: "User added as friend !"
+            message: "User removed as friend !"
         })
     } catch (error) {
         next(error);
@@ -64,4 +97,4 @@ const getAllContacts = async (req, res, next) => {
 }
 
 
-export { getChats, addContact, getAllContacts }
+export { getChats, addContact, getAllContacts, removeContact }

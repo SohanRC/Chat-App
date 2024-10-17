@@ -9,7 +9,8 @@ export default {
       fontFamily: {
         raleway: ["Raleway", "sans-serif"],
         roboto : ["Roboto", "sans-serif"]
-      }
+      },
+      backgroundOpacity: ['active'],
     },
   },
   plugins: [],

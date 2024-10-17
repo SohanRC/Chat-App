@@ -30,6 +30,19 @@ class ChatService {
         }
     }
 
+    async removeContact(userId, friendId) {
+        try {
+            return await axios.post(`/chat/removeContact`, {
+                userId,
+                friendId
+            }, {
+                withCredentials: true
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
     async getAllContacts(userId) {
         try {
             return await axios.post(`/chat/getContacts`, {
