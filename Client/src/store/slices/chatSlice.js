@@ -33,6 +33,8 @@ const chatSlice = createSlice({
         },
         removeFriendChat: (state, action) => {
             // action.pyaload --> remove userChat Id
+            // console.log(state.friendChats)
+            console.log("Remove Called")
             state.friendChats = state.friendChats.filter((item) => item._id !== action.payload);
 
             if (state.friendChats.length === 0) {

@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import chatService from '../Services/ChatService'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeFriendChat, setCurrentChat, setCurrentMessages } from '../store/slices/chatSlice'
+import { useSocket } from '../context/socketContext'
 
 const Modal = ({ msg, setShowModal, id = "" }) => {
 
@@ -11,6 +12,7 @@ const Modal = ({ msg, setShowModal, id = "" }) => {
     const currentChatUser = useSelector((state) => state.chat.currChatUser);
     const dispatch = useDispatch();
     const [wait, setWait] = useState(false);
+    const { socket } = useSocket();
 
     const deleteHandler = async () => {
         if (!id) {
@@ -30,6 +32,8 @@ const Modal = ({ msg, setShowModal, id = "" }) => {
                     dispatch(setCurrentChat(null));
                     dispatch(setCurrentMessages([]));
                 }
+
+                await socket.current.emit('removeFriend', { userId: user._id, friendId: id });
             }
             else {
                 toast.error('Error! Could not delete Contact... Try Again later');

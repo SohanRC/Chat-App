@@ -14,6 +14,7 @@ import { Input } from "./index.js"
 import { setCurrentChat, addFriendChat } from '../store/slices/chatSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import chatService from '../Services/ChatService.js';
+import { useSocket } from '../context/socketContext.jsx';
 
 
 const NewContactDialog = ({ open, onClose }) => {
@@ -23,6 +24,7 @@ const NewContactDialog = ({ open, onClose }) => {
     const [searchItem, setSearchItem] = useState("");
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userInfo);
+    const { socket } = useSocket();
 
     useEffect(() => {
         const getAllContacts = async () => {
@@ -59,6 +61,8 @@ const NewContactDialog = ({ open, onClose }) => {
                 toast.success(message);
                 dispatch(setCurrentChat(contact));
                 dispatch(addFriendChat(contact));
+
+                await socket.current.emit('addFriend', { userId: user._id, friendId: contact._id });
                 onClose();
             }
             else {

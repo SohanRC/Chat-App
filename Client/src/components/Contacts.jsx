@@ -23,7 +23,7 @@ import { Modal } from "./index.js"
 
 const Contacts = () => {
 
-  const [section, setSection] = useState('contact'); // contact --> contact Message, channel ---> channels
+  const [section, setSection] = useState('contact'); // contact --> (contact Message), channel ---> (channels)
   const [showModal, setShowModal] = useState(false);
   const user = useSelector((state) => state.user.userInfo);
   const currentChatUser = useSelector((state) => state.chat.currChatUser);

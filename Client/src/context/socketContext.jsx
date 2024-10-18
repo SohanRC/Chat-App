@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { io } from 'socket.io-client'
-import { addChatMessages } from '../store/slices/chatSlice';
+import { addChatMessages, addFriendChat, removeFriendChat } from '../store/slices/chatSlice';
 
 const socketContext = createContext(null);
 
@@ -31,9 +31,21 @@ export const SocketProvider = ({ children }) => {
             })
 
             const handleReceiveMessage = async (message) => {
-                dispatch(addChatMessages(message));    
+                dispatch(addChatMessages(message));
             }
             socket.current.on('receiveMessage', handleReceiveMessage);
+
+            const addFriend = async ({ friend }) => {
+                dispatch(addFriendChat(friend));
+            }
+            socket.current.on('addFriend', addFriend);
+
+            const removeFriend = async ({ friendId }) => {
+                console.log("Event received : ", friendId);
+                dispatch(removeFriendChat(friendId));
+            }
+
+            socket.current.on('removeFriend', removeFriend);
         }
 
 

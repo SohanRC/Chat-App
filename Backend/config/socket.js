@@ -1,5 +1,6 @@
 import { Server } from 'socket.io'
 import MessageModel from '../models/MessageModel.js';
+import UserModel from '../models/UserModel.js';
 
 const setupSocket = (server) => {
 
@@ -37,7 +38,7 @@ const setupSocket = (server) => {
             // always created
             const createdMessage = await MessageModel.create(message);
 
-            
+
             const senderSocketId = userSocketMap.get(message.sender);
             const recipentSocketId = userSocketMap.get(message.recipent);
 
@@ -49,12 +50,43 @@ const setupSocket = (server) => {
                 // message recived
                 io.to(recipentSocketId).emit('receiveMessage', updatedMessage);
             }
-            
+
             // i have sent the message --> right side show
             io.to(senderSocketId).emit('receiveMessage', createdMessage);
 
         }
         socket.on('sendMessage', sendMessage);
+
+        const handleAddFriend = async ({ userId, friendId }) => {
+            // add userId to frinedList of friendId
+
+            const userSocketId = userSocketMap.get(userId);
+            const friendSocketId = userSocketMap.get(friendId);
+
+            if (friendSocketId) {
+                const user = await UserModel.findById(userId);
+                const { password: hashedPassword, ...restDetails } = user._doc;
+
+                io.to(friendSocketId).emit('addFriend', {
+                    friend: restDetails
+                })
+            }
+        }
+
+        socket.on('addFriend', handleAddFriend);
+
+        const handleRemoveFriend = async ({ userId, friendId }) => {
+            const userSocketId = userSocketMap.get(userId);
+            const friendSocketId = userSocketMap.get(friendId);
+
+            if (friendSocketId) {
+                io.to(friendSocketId).emit('removeFriend', {
+                    friendId: userId
+                })
+            }
+        }
+
+        socket.on('removeFriend', handleRemoveFriend);
 
         // on event : describing the event on which when fired (emit) by the client
         // the particular callback is called . 

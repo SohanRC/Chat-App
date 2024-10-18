@@ -38,12 +38,6 @@ const addContact = async (req, res, next) => {
             { upsert: true }
         )
 
-        await MessageModel.deleteMany({
-            $or: [
-                { sender: userId, recipent: friendId },
-                { sender: friendId, recipent: userId },
-            ]
-        })
 
         return res.status(200).json({
             success: true,
@@ -57,7 +51,6 @@ const addContact = async (req, res, next) => {
 const removeContact = async (req, res, next) => {
     try {
         const { userId, friendId } = req.body;
-        console.log(userId, friendId);
 
         await friendModel.updateOne(
             { userId },
@@ -70,6 +63,13 @@ const removeContact = async (req, res, next) => {
             { $pull: { friendConnections: userId } },
             { upsert: true }
         )
+
+        await MessageModel.deleteMany({
+            $or: [
+                { sender: userId, recipent: friendId },
+                { sender: friendId, recipent: userId },
+            ]
+        })
 
         return res.status(200).json({
             success: true,
