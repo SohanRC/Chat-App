@@ -23,7 +23,7 @@ import { Modal } from "./index.js"
 
 const Contacts = () => {
 
-  const [section, setSection] = useState('contact'); // contact --> (contact Message), channel ---> (channels)
+  const [section, setSection] = useState('channel'); // contact --> (contact Message), channel ---> (channels)
   const [showModal, setShowModal] = useState(false);
   const user = useSelector((state) => state.user.userInfo);
   const currentChatUser = useSelector((state) => state.chat.currChatUser);
@@ -127,7 +127,7 @@ const Contacts = () => {
                   title={`Remove Chat`}
                   arrow={true}
                   placement='top'
-                  // onClick={() => { deleteChat(item._id) }}
+                // onClick={() => { deleteChat(item._id) }}
                 >
                   <IconButton
                     onClick={() => {
@@ -143,7 +143,7 @@ const Contacts = () => {
               </ListItem>
             ))
             :
-            <h1 className='text-center font-bold mt-2'>No Contacts...</h1>
+            <h1 className='text-center font-bold mt-2'>{section === 'contact' ? 'No Contacts...' : 'No Channels...'}</h1>
           }
         </List>
       </section>
