@@ -11,7 +11,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import Avatar from '@mui/material/Avatar';
 import { Input } from "./index.js"
-import { setCurrentChat, addFriendChat } from '../store/slices/chatSlice.js';
+import { setCurrentChat, addFriendChat, setCurrentChannel, addFriendChannel } from '../store/slices/chatSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import chatService from '../Services/ChatService.js';
 import { useSocket } from '../context/socketContext.jsx';
@@ -97,7 +97,7 @@ const NewChannelDialog = ({ open, onClose }) => {
         setSelectedContact((prev) => prev.filter((member) => member._id !== contact._id));
     }
 
-    const createChannel = () => {
+    const createChannel = async () => {
         if (channelName.length === 0) {
             toast.error('Please provide a Channel name!');
             setSelectedContact([]);
@@ -105,11 +105,35 @@ const NewChannelDialog = ({ open, onClose }) => {
             return;
         }
 
-        console.log("Channel Name : ", channelName)
-        console.log("Members : ", selectedContact);
+        setLoading(true)
 
-        // setLoading(true);
-        // onClose();
+        try {
+            const result = await chatService.createChannel(user._id, [...selectedContact, user], channelName);
+            if (result.data) {
+                // success
+                const { data: { message, channel } } = result;
+                toast.success(message);
+                console.log("Channel :", channel);
+                dispatch(setCurrentChannel(channel));
+                dispatch(addFriendChannel(channel));
+
+                // await socket.current.emit('addFriend', { userId: user._id, friendId: contact._id });
+            }
+            else {
+                // error
+                const { response: { data: { message } } } = result;
+                toast.error(message);
+            }
+        } catch (error) {
+            const { response: { data: { message } } } = result;
+            toast.error(message);
+        }
+
+
+        setLoading(false);
+        setSelectedContact([]);
+        setChannelName([]);
+        onClose();
     }
 
 

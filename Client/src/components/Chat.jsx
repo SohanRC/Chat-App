@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { login, logout } from '../store/slices/userSlice.js';
 import { ChatLayout, Loader } from "./index.js"
 import chatService from '../Services/ChatService.js';
-import { setFriendChats } from '../store/slices/chatSlice.js';
+import { setFriendChannels, setFriendChats } from '../store/slices/chatSlice.js';
 
 const Chat = () => {
     const [loading, setLoading] = useState(false);
@@ -42,6 +42,33 @@ const Chat = () => {
             }
         }
 
+        const getAllChannels = async (userId) => {
+            try {
+                setLoading(true)
+                const result = await chatService.getChannels(userId);
+                setLoading(false);
+                if (!result.data) {
+                    // error
+                    const { response: { data: { message } } } = result;
+                    toast.error(message);
+                    dispatch(logout());
+                    navigate('/auth');
+                }
+                else {
+                    // success
+                    const { data: { channels } } = result;
+                    dispatch(setFriendChannels(channels));
+                }
+            } catch (error) {
+                console.log(error);
+                setLoading(false);
+                dispatch(logout());
+                navigate('/auth');
+            }
+        }
+
+        
+
 
         const getUserInfo = async () => {
             try {
@@ -60,6 +87,7 @@ const Chat = () => {
                     const { data: { userDetails } } = result;
                     dispatch(login(userDetails));
                     await getAllFriends(userDetails._id);
+                    await getAllChannels(userDetails._id);
                 }
             } catch (error) {
                 console.log(error);

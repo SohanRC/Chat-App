@@ -15,19 +15,22 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import Avatar from '@mui/material/Avatar';
-import { setCurrentChat, removeFriendChat, logoutChat, setCurrentMessages } from '../store/slices/chatSlice.js';
+import { setCurrentChat, removeFriendChat, logoutChat, setCurrentMessages, setCurrentChannel } from '../store/slices/chatSlice.js';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import { Modal } from "./index.js"
+import { setSection } from '../store/slices/sectionSlice.js';
 
 const Contacts = () => {
 
-  const [section, setSection] = useState('channel'); // contact --> (contact Message), channel ---> (channels)
+  // const [section, setSection] = useState('channel'); // contact --> (contact Message), channel ---> (channels)
+  const section = useSelector((state) => state.section.section);
   const [showModal, setShowModal] = useState(false);
   const user = useSelector((state) => state.user.userInfo);
   const currentChatUser = useSelector((state) => state.chat.currChatUser);
   const friendChats = useSelector((state) => state.chat.friendChats);
+  const friendChannels = useSelector((state) => state.chat.friendChannels);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const deletedItemRef = useRef();
@@ -67,7 +70,8 @@ const Contacts = () => {
   }
 
   const setSectionHandler = (sec) => {
-    setSection(sec);
+    dispatch(setSection(sec));
+    // setSection(sec);
   }
 
   // if (showModal) {
@@ -101,7 +105,7 @@ const Contacts = () => {
         msOverflowStyle: "none"
       }}>
         <List className='text-white gap-6 flex flex-col'>
-          {friendChats.length ?
+          {section === 'contact' && friendChats.length ?
             friendChats.map((item) => (
               <ListItem disableGutters key={item._id}
                 sx={{
@@ -143,7 +147,47 @@ const Contacts = () => {
               </ListItem>
             ))
             :
-            <h1 className='text-center font-bold mt-2'>{section === 'contact' ? 'No Contacts...' : 'No Channels...'}</h1>
+            section === 'contact' && <h1 className='text-center font-bold mt-2'>No Contacts...</h1>
+          }
+
+          {section === 'channel' && friendChannels.length ?
+            friendChannels.map((item) => (
+              <ListItem disableGutters key={item._id}
+                sx={{
+                  height: "50px",
+                }}>
+                <ListItemButton
+                  onClick={() => {
+                    dispatch(setCurrentChannel(item))
+                    if (window.innerWidth <= "890")
+                      navigate('/messageContainer')
+                  }}
+                >
+                  <span className='text-2xl'>
+                    {item.channelName}
+                  </span>
+                </ListItemButton>
+                <Tooltip
+                  title={`Remove Channel`}
+                  arrow={true}
+                  placement='top'
+                // onClick={() => { deleteChat(item._id) }}
+                >
+                  <IconButton
+                    onClick={() => {
+                      setShowModal(true)
+                      deletedItemRef.current = item._id
+                    }}
+                  >
+                    <DeleteIcon sx={{
+                      color: "white",
+                    }} />
+                  </IconButton>
+                </Tooltip>
+              </ListItem>
+            ))
+            :
+            section === 'channel' && <h1 className='text-center font-bold mt-2'>No Channels...</h1>
           }
         </List>
       </section>

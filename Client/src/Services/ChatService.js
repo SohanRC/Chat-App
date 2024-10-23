@@ -17,11 +17,37 @@ class ChatService {
         }
     }
 
+    async getChannels(userId) {
+        try {
+            return await axios.post(`/chat/getChannels`, {
+                userId
+            }, {
+                withCredentials: true
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
     async addContact(userId, friendId) {
         try {
             return await axios.post(`/chat/addContact`, {
                 userId,
                 friendId
+            }, {
+                withCredentials: true
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async createChannel(userId, members, channelName) {
+        try {
+            return await axios.post(`/chat/createChannel`, {
+                userId,
+                members,
+                channelName
             }, {
                 withCredentials: true
             })

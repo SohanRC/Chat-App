@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     currChatUser: null,
+    currChatChannel: null,
     currChatMessages: [],
     friendChats: [],
     friendChannels: [],
@@ -27,14 +28,7 @@ const chatSlice = createSlice({
             state.friendChats = state.friendChats.filter((item) => item._id !== action.payload._id);
             state.friendChats.push(action.payload);
         },
-        addFriendChannel: (state, action) => {
-            state.friendChannels = state.friendChannels.filter((item) => item._id !== action.payload._id);
-            state.friendChannels.push(action.payload);
-        },
         removeFriendChat: (state, action) => {
-            // action.pyaload --> remove userChat Id
-            // console.log(state.friendChats)
-            console.log("Remove Called")
             state.friendChats = state.friendChats.filter((item) => item._id !== action.payload);
 
             if (state.friendChats.length === 0) {
@@ -42,20 +36,25 @@ const chatSlice = createSlice({
                 state.currChatMessages = []
             }
         },
-        removeFriendChannel: (state, action) => {
-            state.friendChannels = state.friendChannels.filter((item) => item._id !== action.payload);
-        },
         resetFriendChats: (state, action) => {
             state.friendChats = [];
         },
-        resetFriendChannels: (state, action) => {
-            state.friendChannels = [];
-        },
         logoutChat: (state, action) => {
             state.currChatUser = null
+            state.currChatChannel = null
             state.currChatMessages = []
             state.friendChats = []
             state.friendChannels = []
+        },
+
+        setCurrentChannel: (state, action) => {
+            state.currChatChannel = action.payload
+        },
+        setFriendChannels: (state, action) => {
+            state.friendChannels = action.payload || [];
+        },
+        addFriendChannel: (state, action) => {
+            state.friendChannels.push(action.payload);
         }
     }
 
@@ -63,4 +62,11 @@ const chatSlice = createSlice({
 
 export default chatSlice.reducer
 
-export const { setCurrentChat, addFriendChannel, addFriendChat, removeFriendChannel, removeFriendChat, resetFriendChannels, resetFriendChats, setCurrentMessages, logoutChat, addChatMessages, setFriendChats } = chatSlice.actions;
+export const
+    {
+        setCurrentChat, addFriendChat, removeFriendChat, resetFriendChats, setCurrentMessages, logoutChat, addChatMessages, setFriendChats,
+
+        setCurrentChannel,addFriendChannel, setFriendChannels
+    }
+
+        = chatSlice.actions;

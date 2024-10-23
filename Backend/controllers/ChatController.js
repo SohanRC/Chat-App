@@ -1,5 +1,6 @@
 import MessageModel from "../models/MessageModel.js";
 import friendModel from "../models/FriendModel.js";
+import ChannelModel from "../models/ChannelModel.js";
 
 
 
@@ -84,7 +85,6 @@ const getAllContacts = async (req, res, next) => {
     try {
         const { userId } = req.body;
         const result = await friendModel.findOne({ userId }).populate('friendConnections');
-        console.log(result);
 
         return res.status(200).json({
             success: true,
@@ -96,5 +96,45 @@ const getAllContacts = async (req, res, next) => {
     }
 }
 
+const createChannel = async (req, res, next) => {
+    try {
+        const { userId, members, channelName } = req.body;
+        const channel = await ChannelModel.create({
+            channelName,
+            admin: userId,
+            members: members.filter((contact) => contact._id)
+        })
 
-export { getChats, addContact, getAllContacts, removeContact }
+        return res.status(200).json({
+            success: true,
+            message: "Channel Created Successfully!",
+            channel
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getAllChannels = async (req, res, next) => {
+    try {
+        const { userId } = req.body;
+        const result = await ChannelModel.find({
+            $or: [
+                { admin: userId },
+                { members: { $elemMatch: { $eq: userId } } }
+            ]
+        })
+            .populate('members');
+
+        return res.status(200).json({
+            success: true,
+            message: "All Channels fetched !",
+            channels: result || [],
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export { getChats, addContact, getAllContacts, removeContact, createChannel, getAllChannels }
