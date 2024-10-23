@@ -122,6 +122,19 @@ const setupSocket = (server) => {
 
         socket.on('removeFriend', handleRemoveFriend);
 
+        const handleRemoveFriendChannel = async (channel) => {
+            const { members } = channel;
+            members.forEach((member) => {
+                const memberSocketId = userSocketMap.get(member);
+
+                if (memberSocketId) {
+                    io.to(memberSocketId).emit('removeFriendChannel', channel);
+                }
+            })
+        }
+
+        socket.on('removeFriendChannel', handleRemoveFriendChannel);
+
         // on event : describing the event on which when fired (emit) by the client
         // the particular callback is called . 
         // example- on client connection, after 4seconds, the server itself fires(emits) the message event to client. Now, the client should handle this event named 'message' and get the required data

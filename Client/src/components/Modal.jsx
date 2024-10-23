@@ -72,13 +72,14 @@ const Modal = ({ msg, setShowModal, id = "", channel = "" }) => {
                 toast.success('Channel Deleted!')
                 dispatch(removeFriendChannel(channel._id));
 
+                if (user._id === channel.admin)
+                    await socket.current.emit('removeFriendChannel', channel);
+                
                 if (currentChatChannel?._id == channel._id) {
                     dispatch(setCurrentChannel(null));
                     dispatch(setCurrentChannelMessages([]));
                 }
 
-                
-                // await socket.current.emit('removeFriend', { userId: user._id, friendId: id });
             }
             else {
                 toast.error('Error! Try Again later');

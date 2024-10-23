@@ -66,7 +66,7 @@ const chatSlice = createSlice({
             state.currChannelMessages = action.payload
         },
         removeFriendChannel: (state, action) => {
-            state.friendChannels = state.friendChannels.filter((item) => item._id !== action.payload);
+            state.friendChannels = state.friendChannels.filter((item) => item._id != action.payload);
 
             if (state.friendChannels.length === 0) {
                 state.currChatChannel = null

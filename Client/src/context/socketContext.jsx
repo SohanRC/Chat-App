@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { io } from 'socket.io-client'
-import { addChannelMessages, addChatMessages, addFriendChannel, addFriendChat, removeFriendChat } from '../store/slices/chatSlice';
+import { addChannelMessages, addChatMessages, addFriendChannel, addFriendChat, removeFriendChannel, removeFriendChat } from '../store/slices/chatSlice';
 
 const socketContext = createContext(null);
 
@@ -59,6 +59,12 @@ export const SocketProvider = ({ children }) => {
             }
 
             socket.current.on('removeFriend', removeFriend);
+
+            const removeFriendChannelHandler = (channel) => {
+                dispatch(removeFriendChannel(channel._id));
+            }
+
+            socket.current.on('removeFriendChannel', removeFriendChannelHandler);
         }
 
 
