@@ -34,6 +34,7 @@ const Contacts = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const deletedItemRef = useRef();
+  const deletedChannelRef = useRef();
 
   const handleLogout = async () => {
     try {
@@ -69,6 +70,14 @@ const Contacts = () => {
     }
   }
 
+  const handleChannelDelete = async (channelId) => {
+    try {
+
+    } catch (error) {
+
+    }
+  }
+
   const setSectionHandler = (sec) => {
     dispatch(setSection(sec));
     // setSection(sec);
@@ -80,7 +89,7 @@ const Contacts = () => {
 
   return (
     <div className=' min-h-screen p-2 text-white font-raleway'>
-      {showModal && <Modal msg="Do you want to permanently delete this contact ? All chats will be removed !" setShowModal={setShowModal} id={deletedItemRef?.current} />}
+      {showModal && <Modal msg="Do you want to permanently delete this contact ? All chats will be removed !" setShowModal={setShowModal} id={deletedItemRef?.current} channel={deletedChannelRef?.current} />}
       <Logo />
       <header className='font-raleway mt-2 rounded-md grid md:grid-cols-2'>
         <div className={`border-2 ${section == "contact" ? "border-[#33FFFF]" : "border-slate-700"}  text-xs md:text-xl text-center text-wrap p-2 cursor-pointer hover:bg-slate-900 duration-100 transition-all  hover:border-[#33FFFF] rounded-md`} onClick={() => { setSectionHandler("contact") }}>
@@ -168,7 +177,7 @@ const Contacts = () => {
                   </span>
                 </ListItemButton>
                 <Tooltip
-                  title={`Remove Channel`}
+                  title={user._id === item.admin ? `Remove Channel` : `Leave Channel`}
                   arrow={true}
                   placement='top'
                 // onClick={() => { deleteChat(item._id) }}
@@ -176,7 +185,7 @@ const Contacts = () => {
                   <IconButton
                     onClick={() => {
                       setShowModal(true)
-                      deletedItemRef.current = item._id
+                      deletedChannelRef.current = item
                     }}
                   >
                     <DeleteIcon sx={{

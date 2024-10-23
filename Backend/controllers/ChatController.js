@@ -1,6 +1,8 @@
 import MessageModel from "../models/MessageModel.js";
 import friendModel from "../models/FriendModel.js";
 import ChannelModel from "../models/ChannelModel.js";
+import channelMessageModel from "../models/ChannelMessage.js";
+import UserModel from "../models/UserModel.js";
 
 
 
@@ -17,6 +19,37 @@ const getChats = async (req, res, next) => {
         return res.status(200).json({
             success: true,
             chatMessages: chats
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getChannelChats = async (req, res, next) => {
+    try {
+        const { channelId } = req.body;
+        const chats = await channelMessageModel.find({
+            channelId
+        }).populate('sender').sort({ createdAt: 1 });
+
+        const updatedChats = chats.map((chat) => {
+            const { sender, ...restDetails } = chat._doc;
+
+            return { ...restDetails, sender: sender._id, senderName: `${sender.firstName} ${sender.lastName}` }
+        })
+
+        // const updatedChats = await Promise.all(chats.map(async (chat) => {
+        //     const senderId = chat.sender;
+        //     const senderDetails = await UserModel.findById(senderId);
+
+        //     return { ...chat._doc, senderName: `${senderDetails.firstName} ${senderDetails.lastName}` }
+        // }));
+
+        // const getUser = await UserModel.findById()
+
+        return res.status(200).json({
+            success: true,
+            channelMessages: updatedChats
         })
     } catch (error) {
         next(error)
@@ -136,5 +169,38 @@ const getAllChannels = async (req, res, next) => {
     }
 }
 
+const removeChannel = async (req, res, next) => {
+    try {
+        const { channelId } = req.body;
+        await ChannelModel.findByIdAndDelete(channelId);
+        await channelMessageModel.deleteMany({ channelId });
 
-export { getChats, addContact, getAllContacts, removeContact, createChannel, getAllChannels }
+        return res.status(200).json({
+            success: true,
+            message: "Channel Deleted !",
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const removeChannelMember = async (req, res, next) => {
+    try {
+        const { channelId, memberId } = req.body;
+        await ChannelModel.updateOne(
+            { _id: channelId },
+            { $pull: { members: memberId } },
+            { upsert: true },
+        )
+
+        return res.status(200).json({
+            success: true,
+            message: "Member Deleted !",
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export { getChats, addContact, getAllContacts, removeContact, createChannel, getAllChannels, getChannelChats, removeChannel, removeChannelMember }

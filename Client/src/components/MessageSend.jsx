@@ -11,6 +11,8 @@ import authService from '../Services/AuthService.js';
 const MessageSend = () => {
     const user = useSelector((state) => state.user.userInfo);
     const currentChatUser = useSelector((state) => state.chat.currChatUser);
+    const currentChatChannel = useSelector((state) => state.chat.currChatChannel);
+    const section = useSelector((state) => state.section.section);
     const { socket } = useSocket();
     const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
     const emojiRef = useRef();
@@ -71,26 +73,48 @@ const MessageSend = () => {
         }
 
         if (inputText) {
-            await socket.current.emit('sendMessage', {
-                sender: user._id,
-                recipent: currentChatUser._id,
-                messageType: 'text',
-                content: inputText
-            })
+            if (section === 'contact') {
+                await socket.current.emit('sendMessage', {
+                    sender: user._id,
+                    recipent: currentChatUser._id,
+                    messageType: 'text',
+                    content: inputText
+                })
+            }
+            else {
+                await socket.current.emit('sendChannelMessage', {
+                    sender: user._id,
+                    channelId: currentChatChannel._id,
+                    messageType: 'text',
+                    content: inputText,
+                    senderName: `${user.firstName} ${user.lastName}`
+                })
+            }
+
             setInputText("");
             setFile("");
-            // fileRef.current = "";
         }
         else if (fileUrl) {
-            await socket.current.emit('sendMessage', {
-                sender: user._id,
-                recipent: currentChatUser._id,
-                messageType: 'file',
-                fileUrl
-            })
+            if (section === 'contact') {
+                await socket.current.emit('sendMessage', {
+                    sender: user._id,
+                    recipent: currentChatUser._id,
+                    messageType: 'file',
+                    fileUrl
+                })
+            }
+            else {
+                await socket.current.emit('sendChannelMessage', {
+                    sender: user._id,
+                    channelId: currentChatChannel._id,
+                    messageType: 'file',
+                    fileUrl,
+                    senderName: `${user.firstName} ${user.lastName}`
+                })
+            }
+
             setInputText("");
             setFile("");
-            // fileRef.current = "";
         }
         else {
             toast.warning("Cannot Send Empty Message !");

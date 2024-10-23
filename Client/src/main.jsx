@@ -7,6 +7,7 @@ import { Provider } from "react-redux"
 import { store, persistor } from './store/store.js'
 import { PersistGate } from 'redux-persist/integration/react'
 import { SocketProvider } from './context/socketContext.jsx'
+import { Modal } from '@mui/material'
 
 const router = createBrowserRouter(
     createRoutesFromElements(

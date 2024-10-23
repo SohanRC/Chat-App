@@ -1,6 +1,8 @@
 import { Server } from 'socket.io'
 import MessageModel from '../models/MessageModel.js';
 import UserModel from '../models/UserModel.js';
+import channelMessageModel from '../models/ChannelMessage.js';
+import ChannelModel from '../models/ChannelModel.js';
 
 const setupSocket = (server) => {
 
@@ -57,6 +59,24 @@ const setupSocket = (server) => {
         }
         socket.on('sendMessage', sendMessage);
 
+        const sendChannelMessage = async ({ senderName, ...message }) => {
+            const channelMessage = await channelMessageModel.create(message);
+            console.log("Channel Message : ", channelMessage)
+            const { members } = await ChannelModel.findById(message.channelId);
+
+            members.forEach(member => {
+
+                const memberSocketId = userSocketMap.get(member)
+                // check if this member is online
+                if (memberSocketId) {
+                    io.to(memberSocketId).emit('receiveChannelMessage', { ...channelMessage._doc, senderName });
+                }
+            });
+
+        }
+
+        socket.on('sendChannelMessage', sendChannelMessage);
+
         const handleAddFriend = async ({ userId, friendId }) => {
             // add userId to frinedList of friendId
 
@@ -74,6 +94,20 @@ const setupSocket = (server) => {
         }
 
         socket.on('addFriend', handleAddFriend);
+
+        const handleAddChannel = async (channel) => {
+            const { members } = channel;
+            members.forEach(member => {
+
+                const memberSocketId = userSocketMap.get(member)
+                // check if this member is online
+                if (memberSocketId) {
+                    io.to(memberSocketId).emit('addChannel', channel);
+                }
+            });
+        }
+
+        socket.on('addChannel', handleAddChannel);
 
         const handleRemoveFriend = async ({ userId, friendId }) => {
             const userSocketId = userSocketMap.get(userId);

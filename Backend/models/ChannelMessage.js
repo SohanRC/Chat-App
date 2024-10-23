@@ -11,12 +11,25 @@ const channelMessageSchema = new Schema({
         required: true,
         ref: 'user'
     },
-    message: {
+    messageType: {
         type: String,
+        enum: ['text', 'file'],
         required: true
+    },
+    fileUrl: {
+        type: String,
+        required: function () {
+            return this.messageType === "file"
+        }
+    },
+    content: {
+        type: String,
+        required: function () {
+            return this.messageType === "text"
+        }
     }
-})
+}, { timestamps: true })
 
-const channelMessageModel = mongoose.Schema('channelMessage', channelMessageSchema);
+const channelMessageModel = mongoose.model('channelMessage', channelMessageSchema);
 
 export default channelMessageModel;

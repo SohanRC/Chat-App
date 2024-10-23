@@ -117,7 +117,7 @@ const NewChannelDialog = ({ open, onClose }) => {
                 dispatch(setCurrentChannel(channel));
                 dispatch(addFriendChannel(channel));
 
-                // await socket.current.emit('addFriend', { userId: user._id, friendId: contact._id });
+                await socket.current.emit('addChannel', channel);
             }
             else {
                 // error

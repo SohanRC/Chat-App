@@ -4,6 +4,7 @@ const initialState = {
     currChatUser: null,
     currChatChannel: null,
     currChatMessages: [],
+    currChannelMessages: [],
     friendChats: [],
     friendChannels: [],
 }
@@ -40,11 +41,12 @@ const chatSlice = createSlice({
             state.friendChats = [];
         },
         logoutChat: (state, action) => {
-            state.currChatUser = null
-            state.currChatChannel = null
-            state.currChatMessages = []
-            state.friendChats = []
-            state.friendChannels = []
+            state.currChatUser = null,
+                state.currChatChannel = null,
+                state.currChatMessages = [],
+                state.currChannelMessages = [],
+                state.friendChats = [],
+                state.friendChannels = []
         },
 
         setCurrentChannel: (state, action) => {
@@ -54,8 +56,23 @@ const chatSlice = createSlice({
             state.friendChannels = action.payload || [];
         },
         addFriendChannel: (state, action) => {
+            state.friendChannels = state.friendChannels.filter((channel) => channel._id != action.payload._id);
             state.friendChannels.push(action.payload);
-        }
+        },
+        addChannelMessages: (state, action) => {
+            state.currChannelMessages.push(action.payload);
+        },
+        setCurrentChannelMessages: (state, action) => {
+            state.currChannelMessages = action.payload
+        },
+        removeFriendChannel: (state, action) => {
+            state.friendChannels = state.friendChannels.filter((item) => item._id !== action.payload);
+
+            if (state.friendChannels.length === 0) {
+                state.currChatChannel = null
+                state.currChannelMessages = []
+            }
+        },
     }
 
 })
@@ -66,7 +83,8 @@ export const
     {
         setCurrentChat, addFriendChat, removeFriendChat, resetFriendChats, setCurrentMessages, logoutChat, addChatMessages, setFriendChats,
 
-        setCurrentChannel,addFriendChannel, setFriendChannels
+        setCurrentChannel, addFriendChannel, setFriendChannels, addChannelMessages,
+        setCurrentChannelMessages,removeFriendChannel
     }
 
         = chatSlice.actions;

@@ -17,6 +17,18 @@ class ChatService {
         }
     }
 
+    async getChannelChats(channelId) {
+        try {
+            return await axios.post(`/chat/getChannelChats`, {
+                channelId,
+            }, {
+                withCredentials: true
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
     async getChannels(userId) {
         try {
             return await axios.post(`/chat/getChannels`, {
@@ -61,6 +73,31 @@ class ChatService {
             return await axios.post(`/chat/removeContact`, {
                 userId,
                 friendId
+            }, {
+                withCredentials: true
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async removeChannel(channelId) {
+        try {
+            return await axios.post(`/chat/removeChannel`, {
+                channelId
+            }, {
+                withCredentials: true
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async removeChannelMember(channelId, memberId) {
+        try {
+            return await axios.post(`/chat/removeChannelMember`, {
+                channelId,
+                memberId
             }, {
                 withCredentials: true
             })

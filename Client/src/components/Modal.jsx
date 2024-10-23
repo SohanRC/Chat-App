@@ -3,16 +3,18 @@ import { Button } from '@mui/material'
 import { toast } from 'react-toastify'
 import chatService from '../Services/ChatService'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeFriendChat, setCurrentChat, setCurrentMessages } from '../store/slices/chatSlice'
+import { removeFriendChannel, removeFriendChat, setCurrentChannel, setCurrentChannelMessages, setCurrentChat, setCurrentMessages } from '../store/slices/chatSlice'
 import { useSocket } from '../context/socketContext'
 
-const Modal = ({ msg, setShowModal, id = "" }) => {
+const Modal = ({ msg, setShowModal, id = "", channel = "" }) => {
 
     const user = useSelector((state) => state.user.userInfo);
     const currentChatUser = useSelector((state) => state.chat.currChatUser);
+    const currentChatChannel = useSelector((state) => state.chat.currChatChannel);
     const dispatch = useDispatch();
     const [wait, setWait] = useState(false);
     const { socket } = useSocket();
+    const section = useSelector((state) => state.section.section);
 
     const deleteHandler = async () => {
         if (!id) {
@@ -49,6 +51,50 @@ const Modal = ({ msg, setShowModal, id = "" }) => {
         setShowModal(false);
     }
 
+    const deleteChannelHandler = async () => {
+        if (!channel) {
+            setShowModal(false);
+            toast.error('No Channel Deleted !');
+            return;
+        }
+        try {
+            setWait(true);
+            let result;
+            if (user._id === channel.admin) {
+                result = await chatService.removeChannel(channel._id);
+            }
+            else {
+                result = await chatService.removeChannelMember(channel._id, user._id);
+            }
+            setWait(false);
+            if (result.data) {
+                // success deletion
+                toast.success('Channel Deleted!')
+                dispatch(removeFriendChannel(channel._id));
+
+                if (currentChatChannel?._id == channel._id) {
+                    dispatch(setCurrentChannel(null));
+                    dispatch(setCurrentChannelMessages([]));
+                }
+
+                
+                // await socket.current.emit('removeFriend', { userId: user._id, friendId: id });
+            }
+            else {
+                toast.error('Error! Try Again later');
+                const { response: { data: { message } } } = result;
+                toast.error(message);
+            }
+        } catch (error) {
+            setWait(false);
+            toast.error('Error! Try Again Later!');
+            console.log(error)
+        }
+
+        setShowModal(false);
+    }
+
+
     return (
         <div className='h-screen w-screen flex justify-center items-center'
             style={{
@@ -78,7 +124,7 @@ const Modal = ({ msg, setShowModal, id = "" }) => {
                             bgcolor: "#b91c1c",
                         }
                     }}
-                        onClick={deleteHandler}
+                        onClick={section === 'contact' ? deleteHandler : deleteChannelHandler}
                         disabled={wait}
                     >
                         {wait ? "Deleting..." : "Delete"}
