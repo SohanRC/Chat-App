@@ -206,15 +206,15 @@ const Contacts = () => {
           <p>{user.firstName}</p>
         </div>
         <div className='flex items-center font-bold text-xl'>
-          <Tooltip title="Edit Profile">
-            <IconButton onClick={handleEditProfile}>
+          <Tooltip title="Edit Profile" onClick={handleEditProfile}>
+            <IconButton >
               <EditIcon className='text-[#33FFFF] cursor-pointer' sx={{
                 fontSize: "1.6rem"
               }} />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Logout">
-            <IconButton onClick={handleLogout}>
+          <Tooltip title="Logout" onClick={handleLogout}>
+            <IconButton >
               <LogoutIcon className='text-[#33FFFF] cursor-pointer' sx={{
                 fontSize: "1.6rem"
               }} />
