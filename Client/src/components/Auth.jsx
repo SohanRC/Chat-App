@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { login } from '../store/slices/userSlice.js';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { TailSpin, Comment, Discuss } from 'react-loader-spinner';
 
 
 
@@ -14,7 +15,7 @@ const Auth = () => {
     const [bgLink, setBglink] = useState("https://w0.peakpx.com/wallpaper/30/145/HD-wallpaper-polygonal-abstract-red-dark-background-abstract-dark-red-deviantart.jpg")
     const [authState, setAuthState] = useState("login");
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [submitting, setSubmitting] = useState(false)
+    const [wait, setWait] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -35,8 +36,9 @@ const Auth = () => {
 
     const handleLogin = async (data) => {
         try {
+            setWait(true);
             const result = await authService.login(data.login);
-
+            setWait(false)
             if (!result.data) {
                 // error
                 const { response: { data: { message } } } = result;
@@ -50,6 +52,7 @@ const Auth = () => {
                 navigate('/');
             }
         } catch (error) {
+            setWait(false)
             console.log(error)
             toast.error("Internal Server Error ! Try again later !");
         }
@@ -58,8 +61,9 @@ const Auth = () => {
     const handleSignUp = async (data) => {
         console.log("SignUp data : ", data.signup)
         try {
+            setWait(true)
             const result = await authService.signUp(data.signup);
-            console.log(result)
+            setWait(false)
 
             if (!result.data) {
                 // error
@@ -73,6 +77,7 @@ const Auth = () => {
                 setAuthState("login");
             }
         } catch (error) {
+            setWait(false)
             console.log(error)
             toast.error("Internal Server Error ! Try again later !");
         }
@@ -162,8 +167,14 @@ const Auth = () => {
                                     <p className='text-red-500 font-bold'>{errors.login?.password?.message}</p>
                                 </div>
                                 <div className='text-center mt-1'>
-                                    <button type='submit' className='bg-red-500 py-1 px-4 text-white font-bold text-2xl
-                            rounded-md hover:bg-red-600 duration-75'>Submit</button>
+                                    <button type='submit' className={`py-1 px-4 ${!wait && "bg-red-500 hover:bg-red-600"} text-white font-bold text-2xl rounded-md duration-75 disabled:cursor-not-allowed`}
+                                        disabled={wait}
+                                    >
+                                        {wait ? <Discuss
+                                            height={"60"}
+                                            color='#ff727d'
+                                        /> : "Submit"}
+                                    </button>
                                 </div>
                             </div>
                         </>
@@ -244,9 +255,15 @@ const Auth = () => {
                                 </div>
                             </div>
                             <div className='text-center mt-1'>
-                                <button type='submit' className='bg-red-500 py-1 px-4 text-white font-bold text-2xl
-                            rounded-md hover:bg-red-600 duration-75'>Submit</button>
-                            </div>
+                                    <button type='submit' className={`py-1 px-4 ${!wait && "bg-red-500 hover:bg-red-600"} text-white font-bold text-2xl rounded-md duration-75 disabled:cursor-not-allowed`}
+                                        disabled={wait}
+                                    >
+                                        {wait ? <Discuss
+                                            height={"60"}
+                                            color='#ff727d'
+                                        /> : "Submit"}
+                                    </button>
+                                </div>
                         </>
                     }
                 </form>

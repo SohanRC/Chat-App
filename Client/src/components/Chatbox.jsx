@@ -1,6 +1,7 @@
 import React from 'react'
 import { ChatHeader, MessageContainer, MessageSend } from "./index.js"
 import { useSelector } from 'react-redux';
+import LOGO from "../../public/CHATLOGO.jpg"
 
 const Chatbox = () => {
 
@@ -14,7 +15,9 @@ const Chatbox = () => {
       <ChatHeader />
       <MessageContainer />
       <MessageSend />
-    </div></> : <h1 className='flex justify-center items-center text-white text-4xl'>Select a user to chat !</h1>
+    </div></> : <div>
+        <img src={LOGO} alt="LOGO" className='object-fit w-full h-screen' />
+    </div>
   }
 
   return (currentChatChannel) ? <><div className='text-white font-raleway relative
@@ -22,7 +25,9 @@ const Chatbox = () => {
     <ChatHeader />
     <MessageContainer />
     <MessageSend />
-  </div></> : <h1 className='flex justify-center items-center text-white text-4xl'>Select a Channel to chat !</h1>
+  </div></> : <div>
+        <img src={LOGO} alt="LOGO" className='object-fit w-full h-screen' />
+    </div>
 
   // return (
   //   <div className='text-white font-raleway relative
