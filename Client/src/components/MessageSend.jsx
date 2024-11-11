@@ -121,8 +121,8 @@ const MessageSend = () => {
         }
     }
     return (
-        <div className='flex justify-center items-center h-20 p-2 gap-2'>
-            <div className=' bg-slate-700 flex justify-center items-center rounded-md h-16 relative'>
+        <div className='flex justify-center items-center h-20 p-2 gap-2 '>
+            <div className=' bg-slate-700 flex justify-center items-center rounded-md h-14 relative mb-2'>
                 <input type="text"
                     className='bg-transparent p-4 text-lg focus:outline-none focus:border-none w-36 sm:w-56 md:w-96 rounded-md'
                     placeholder='Enter Message'
@@ -167,7 +167,7 @@ const MessageSend = () => {
 
             </div>
 
-            <div className='bg-violet-600 flex justify-center items-center rounded-md h-16 p-3 md:p-5 cursor-pointer hover:bg-violet-700 transition-all duration-100'
+            <div className='bg-violet-600 flex justify-center items-center rounded-md h-14 p-3 md:p-5 cursor-pointer hover:bg-violet-700 transition-all duration-100 mb-2'
                 onClick={sendMessageHandler}
             >
                 <SendIcon className='cursor-pointer' />

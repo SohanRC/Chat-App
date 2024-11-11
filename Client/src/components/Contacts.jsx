@@ -88,7 +88,7 @@ const Contacts = () => {
   // }
 
   return (
-    <div className=' min-h-screen p-2 text-white font-raleway'>
+    <div className=' min-h-screen p-2 text-white font-raleway relative'>
       {showModal && <Modal msg="Do you want to permanently delete this contact ? All chats will be removed !" setShowModal={setShowModal} id={deletedItemRef?.current} channel={deletedChannelRef?.current} />}
       <Logo />
       <header className='font-raleway mt-2 rounded-md grid md:grid-cols-2'>
@@ -200,7 +200,7 @@ const Contacts = () => {
           }
         </List>
       </section>
-      <section className='user-profile z-20 bg-slate-700 h-16 rounded-md flex justify-between items-center p-2'>
+      <section className='user-profile z-20 bg-slate-700 h-16 rounded-md flex justify-between items-center p-2 absolute bottom-2 w-[95%]'>
         <div className='flex items-center gap-2 font-bold text-xl'>
           <img src={user.imageUrl} alt="Profile-Image" className='h-10 w-10 rounded-full' />
           <p>{user.firstName}</p>
