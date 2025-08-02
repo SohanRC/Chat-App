@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 4000;
 
 // middlewares
 app.use(cors({
-    origin: true,
+    origin: 'https://chat-app-rho-swart.vercel.app',
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
 }));
